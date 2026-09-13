@@ -19,9 +19,6 @@
     <ClCompile Include="Apple.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Snake.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Math.cpp">
       <Filter>Sources</Filter>
     </ClCompile>

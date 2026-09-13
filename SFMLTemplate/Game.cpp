@@ -5,10 +5,7 @@
 
 namespace SnakeGame
 {
-     bool SamePosition(Position2D a, Position2D b)
-    {
-        return a.x == b.x && a.y == b.y;
-    }
+     
 
      int DifficultyPoints(int difficulty)
     {
@@ -191,9 +188,11 @@ namespace SnakeGame
         for (int i = 0; i < INITIAL_SNAKE_LENGTH; ++i)
         {
             SnakeSegment segment;
+
             segment.position.x = 400.f - i * PLAYER_SIZE;
             segment.position.y = 300.f;
             segment.direction = snakeDir::Right;
+
             game.snake.segments.push_back(segment);
         }
 

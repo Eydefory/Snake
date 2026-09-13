@@ -9,4 +9,6 @@ namespace SnakeGame
     };
 
     typedef Vector2D Position2D;
+
+    bool SamePosition(Position2D first, Position2D second);
 }
