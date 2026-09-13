@@ -68,14 +68,16 @@ namespace SnakeGame
         sf::SoundBuffer startSoundBuffer;
         sf::Sound startSound;
 
-        sf::SoundBuffer musicBuffer;
-        sf::Sound music;
+        sf::Music menuMusic;
+        sf::Music gameMusic;
 
         sf::SoundBuffer buttonSoundBuffer;
         sf::Sound buttonSound;
 
         sf::SoundBuffer gameOverSoundBuffer;
         sf::Sound gameOverSound;
+
+		
 
         bool soundEnabled = true;
         bool musicEnabled = true;
@@ -209,15 +211,13 @@ namespace SnakeGame
             )
         );
 
-        assert(
-            game.musicBuffer.loadFromFile(
-                "Resources/menu_music.ogg"
-            )
-        );
+        assert(game.menuMusic.openFromFile("Resources/menu-music.ogg"));
+        game.menuMusic.setLoop(true);
+        game.menuMusic.setVolume(20.f);
 
-        game.music.setBuffer(game.musicBuffer);
-        game.music.setLoop(true);
-        game.music.setVolume(20.f);
+        assert(game.gameMusic.openFromFile("Resources/game-music.ogg"));
+        game.gameMusic.setLoop(true);
+        game.gameMusic.setVolume(20.f);
 
         assert(
             game.buttonSoundBuffer.loadFromFile(
@@ -267,15 +267,11 @@ namespace SnakeGame
 
         game.crashSound.setVolume(15.f);
 
-        assert(
-            game.gameOverSoundBuffer.loadFromFile(
-                "Resources/end.wav"
-            )
-        );
+        assert(game.gameOverSoundBuffer.loadFromFile("Resources/end.wav"));
 
-        game.gameOverSound.setBuffer(
-            game.gameOverSoundBuffer
-        );
+		
+
+        game.gameOverSound.setBuffer(game.gameOverSoundBuffer);
 
         game.gameOverSound.setVolume(80.f);
 

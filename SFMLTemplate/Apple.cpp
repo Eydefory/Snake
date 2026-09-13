@@ -5,6 +5,31 @@
 
 namespace SnakeGame
 {
+    bool IsApplePositionFree(
+        const Apples& apples,
+        const Gamestate& game,
+        Position2D position)
+    {
+        for (const SnakeSegment& segment : game.snake.segments)
+        {
+            if (SamePosition(segment.position, position))
+                return false;
+        }
+
+        for (int i = 0;
+            i < static_cast<int>(apples.applePos.size());
+            ++i)
+        {
+            if (!apples.isAppleEaten[i] &&
+                SamePosition(apples.applePos[i], position))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     bool FindFreeApplePosition(
         const Apples& apples,
         const Gamestate& game,
@@ -16,7 +41,9 @@ namespace SnakeGame
         const int rows =
             SCREEN_HEIGHT / static_cast<int>(APPLE_SIZE);
 
-        for (int attempt = 0; attempt < columns * rows * 2; ++attempt)
+        for (int attempt = 0;
+            attempt < columns * rows * 2;
+            ++attempt)
         {
             position.x =
                 static_cast<float>(
@@ -28,34 +55,13 @@ namespace SnakeGame
                     (1 + rand() % (rows - 2)) * APPLE_SIZE
                     );
 
-            bool occupied = false;
-
-            for (const SnakeSegment& segment : game.snake.segments)
+            if (IsApplePositionFree(
+                apples,
+                game,
+                position))
             {
-                if (SamePosition(segment.position, position))
-                {
-                    occupied = true;
-                    break;
-                }
-            }
-
-            if (occupied)
-                continue;
-
-            for (int i = 0;
-                i < static_cast<int>(apples.applePos.size());
-                ++i)
-            {
-                if (!apples.isAppleEaten[i] &&
-                    SamePosition(apples.applePos[i], position))
-                {
-                    occupied = true;
-                    break;
-                }
-            }
-
-            if (!occupied)
                 return true;
+            }
         }
 
         for (int y = 1;
@@ -72,34 +78,13 @@ namespace SnakeGame
                 position.y =
                     static_cast<float>(y * APPLE_SIZE);
 
-                bool occupied = false;
-
-                for (const SnakeSegment& segment : game.snake.segments)
+                if (IsApplePositionFree(
+                    apples,
+                    game,
+                    position))
                 {
-                    if (SamePosition(segment.position, position))
-                    {
-                        occupied = true;
-                        break;
-                    }
-                }
-
-                if (occupied)
-                    continue;
-
-                for (int i = 0;
-                    i < static_cast<int>(apples.applePos.size());
-                    ++i)
-                {
-                    if (!apples.isAppleEaten[i] &&
-                        SamePosition(apples.applePos[i], position))
-                    {
-                        occupied = true;
-                        break;
-                    }
-                }
-
-                if (!occupied)
                     return true;
+                }
             }
         }
 
@@ -109,7 +94,9 @@ namespace SnakeGame
         return false;
     }
 
-    void InitApples(Apples& apples, const Gamestate& game)
+    void InitApples(
+        Apples& apples,
+        const Gamestate& game)
     {
         apples.isAppleEaten.clear();
         apples.applePos.clear();
@@ -119,8 +106,13 @@ namespace SnakeGame
         {
             Position2D position;
 
-            if (!FindFreeApplePosition(apples, game, position))
+            if (!FindFreeApplePosition(
+                apples,
+                game,
+                position))
+            {
                 break;
+            }
 
             apples.applePos.push_back(position);
             apples.isAppleEaten.push_back(false);
@@ -130,8 +122,10 @@ namespace SnakeGame
             sprite.setTexture(game.appleTexture);
 
             sprite.setScale(
-                APPLE_SIZE / game.appleTexture.getSize().x,
-                APPLE_SIZE / game.appleTexture.getSize().y
+                APPLE_SIZE /
+                game.appleTexture.getSize().x,
+                APPLE_SIZE /
+                game.appleTexture.getSize().y
             );
 
             sprite.setPosition(

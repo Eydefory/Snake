@@ -45,6 +45,8 @@ namespace SnakeGame
         }
     }
 
+	
+
     void PlayEatSound(Gamestate& game)
     {
         if (game.soundEnabled)
@@ -77,30 +79,35 @@ namespace SnakeGame
 
     void UpdateMusic(Gamestate& game)
     {
-        if (game.musicEnabled)
+        if (!game.musicEnabled)
         {
-            if (game.music.getStatus() != sf::Sound::Playing)
-                game.music.play();
+            game.menuMusic.stop();
+            game.gameMusic.stop();
+            return;
+        }
+
+        if (game.currentScreen == GameScreen::Menu)
+        {
+            game.gameMusic.stop();
+
+            if (game.menuMusic.getStatus() != sf::SoundSource::Playing)
+                game.menuMusic.play();
+        }
+        else if (game.currentScreen == GameScreen::Game)
+        {
+            game.menuMusic.stop();
+
+            if (game.gameMusic.getStatus() != sf::SoundSource::Playing)
+                game.gameMusic.play();
         }
         else
         {
-            if (game.music.getStatus() == sf::Sound::Playing)
-                game.music.stop();
+            game.menuMusic.stop();
+            game.gameMusic.stop();
         }
     }
 
-    bool IsSnakePosition(
-        const Snake& snake,
-        Position2D position)
-    {
-        for (const SnakeSegment& segment : snake.segments)
-        {
-            if (SamePosition(segment.position, position))
-                return true;
-        }
-
-        return false;
-    }
+    
 
     void SetBodyTexture(
         Gamestate& game,
