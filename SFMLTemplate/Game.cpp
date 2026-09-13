@@ -86,25 +86,41 @@ namespace SnakeGame
             return;
         }
 
-        if (game.currentScreen == GameScreen::Menu)
+        
+        if (game.currentScreen == GameScreen::Menu ||
+            game.currentScreen == GameScreen::Difficulty ||
+            game.currentScreen == GameScreen::Settings ||
+            game.currentScreen == GameScreen::Records)
         {
             game.gameMusic.stop();
 
             if (game.menuMusic.getStatus() != sf::SoundSource::Playing)
                 game.menuMusic.play();
+
+            return;
         }
-        else if (game.currentScreen == GameScreen::Game)
+
+        
+        if (game.currentScreen == GameScreen::Game)
         {
+            
+            if (game.paused)
+            {
+                game.gameMusic.stop();
+                return;
+            }
+
             game.menuMusic.stop();
 
             if (game.gameMusic.getStatus() != sf::SoundSource::Playing)
                 game.gameMusic.play();
+
+            return;
         }
-        else
-        {
-            game.menuMusic.stop();
-            game.gameMusic.stop();
-        }
+
+        
+        game.menuMusic.stop();
+        game.gameMusic.stop();
     }
 
     
