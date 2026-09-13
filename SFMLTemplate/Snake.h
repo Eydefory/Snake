@@ -30,6 +30,4 @@ namespace SnakeGame
         float snakeSpeed = DIFFICULTY_SPEEDS[0];
         bool isAlive = true;
     };
-
-    
 }

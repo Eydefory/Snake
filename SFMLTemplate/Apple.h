@@ -18,5 +18,14 @@ namespace SnakeGame
         std::vector<sf::Sprite> appleSprite;
     };
 
-    void InitApples(Apples& apples, const Gamestate& game);
+    bool FindFreeApplePosition(
+        const Apples& apples,
+        const Gamestate& game,
+        Position2D& position
+    );
+
+    void InitApples(
+        Apples& apples,
+        const Gamestate& game
+    );
 }
