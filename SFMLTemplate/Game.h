@@ -296,6 +296,9 @@ namespace SnakeGame
             }
         );
 
+
+
+
         if (game.records.size() > 10)
             game.records.resize(10);
 
