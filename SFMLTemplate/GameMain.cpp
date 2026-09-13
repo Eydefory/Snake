@@ -63,21 +63,21 @@ int main()
             {
                 if (key == sf::Keyboard::W || key == sf::Keyboard::Up)
                 {
-                    PlayButtonSound(game);
-                    game.menuSelection--;
+                                        game.menuSelection--;
                     if (game.menuSelection < 0)
                         game.menuSelection = 4;
                 }
                 else if (key == sf::Keyboard::S || key == sf::Keyboard::Down)
                 {
 
-                    PlayButtonSound(game);
+                    
                     game.menuSelection++;
                     if (game.menuSelection > 4)
                         game.menuSelection = 0;
                 }
                 else if (key == sf::Keyboard::Enter)
                 {
+                    PlayButtonSound(game);
                     if (game.menuSelection == 0)
                     {
                         ResetGame(game);
@@ -109,7 +109,7 @@ int main()
                 if (key == sf::Keyboard::W || key == sf::Keyboard::Up)
                 {
 
-                    PlayButtonSound(game);
+                    
                     game.difficultySelection--;
                     if (game.difficultySelection < 0)
                         game.difficultySelection = 4;
@@ -117,7 +117,7 @@ int main()
                 else if (key == sf::Keyboard::S || key == sf::Keyboard::Down)
                 {
 
-                    PlayButtonSound(game);
+                    
                     game.difficultySelection++;
                     if (game.difficultySelection > 4)
                         game.difficultySelection = 0;
@@ -142,7 +142,7 @@ int main()
                 if (key == sf::Keyboard::W || key == sf::Keyboard::Up)
                 {
 
-                    PlayButtonSound(game);
+                    
                     game.settingsSelection--;
                     if (game.settingsSelection < 0)
                         game.settingsSelection = 1;
@@ -150,7 +150,7 @@ int main()
                 else if (key == sf::Keyboard::S || key == sf::Keyboard::Down)
                 {
 
-                    PlayButtonSound(game);
+                    
                     game.settingsSelection++;
                     if (game.settingsSelection > 1)
                         game.settingsSelection = 0;
@@ -187,14 +187,14 @@ int main()
                 {
                     if (key == sf::Keyboard::W || key == sf::Keyboard::Up)
                     {
-                        PlayButtonSound(game);
+                        
                         game.pauseSelection--;
                         if (game.pauseSelection < 0)
                             game.pauseSelection = 1;
                     }
                     else if (key == sf::Keyboard::S || key == sf::Keyboard::Down)
                     {
-                        PlayButtonSound(game);
+                        
                         game.pauseSelection++;
                         if (game.pauseSelection > 1)
                             game.pauseSelection = 0;
@@ -277,7 +277,7 @@ int main()
                         }
                         else
                         {
-                            PlayButtonSound(game);
+                            
                             game.gameOverSelection = 0;
                             game.gameOverStage = 1;
                         }
@@ -287,14 +287,14 @@ int main()
                 {
                     if (key == sf::Keyboard::W || key == sf::Keyboard::Up)
                     {
-                        PlayButtonSound(game);
+                        
                         game.gameOverSelection--;
                         if (game.gameOverSelection < 0)
                             game.gameOverSelection = 1;
                     }
                     else if (key == sf::Keyboard::S || key == sf::Keyboard::Down)
                     {
-						PlayButtonSound(game);
+						
                         game.gameOverSelection++;
                         if (game.gameOverSelection > 1)
                             game.gameOverSelection = 0;
@@ -320,6 +320,7 @@ int main()
             {
                 if (key == sf::Keyboard::Enter)
                 {
+                    PlayButtonSound(game);
                     SnakeGame::AddRecord(game, game.inputName.empty() ? "XYZ" : game.inputName);
                     game.inputName.clear();
                     game.currentScreen = GameScreen::GameOver;
@@ -328,6 +329,7 @@ int main()
                 }
                 else if (key == sf::Keyboard::Escape)
                 {
+                    PlayButtonSound(game);
                     game.inputName.clear();
                     game.currentScreen = GameScreen::GameOver;
                     game.gameOverStage = 1;

@@ -1,5 +1,3 @@
-XYZ 50
-XYZ 10
-Rick 4
-Morty 4
-Pidoras 0
+Rick 90
+& 80
+Morty 60
