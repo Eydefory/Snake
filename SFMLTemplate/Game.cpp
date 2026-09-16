@@ -5,24 +5,34 @@ namespace SnakeGame
     int DifficultyPoints(int difficulty)
     {
         if (difficulty < MIN_DIFFICULTY)
+        {
             difficulty = MIN_DIFFICULTY;
+        }
 
         if (difficulty > MAX_DIFFICULTY)
+        {
             difficulty = MAX_DIFFICULTY;
+        }
 
         return DIFFICULTY_POINTS[difficulty - 1];
     }
 
+
     float DifficultySpeed(int difficulty)
     {
         if (difficulty < MIN_DIFFICULTY)
+        {
             difficulty = MIN_DIFFICULTY;
+        }
 
         if (difficulty > MAX_DIFFICULTY)
+        {
             difficulty = MAX_DIFFICULTY;
+        }
 
         return DIFFICULTY_SPEEDS[difficulty - 1];
     }
+
 
     const char* DifficultyName(int difficulty)
     {
@@ -45,66 +55,83 @@ namespace SnakeGame
         }
     }
 
-	
 
     void PlayEatSound(Gamestate& game)
     {
-        if (game.soundEnabled)
+        if (game.audio.soundEnabled)
+        {
             game.eatSound.play();
+        }
     }
+
 
     void PlayCrashSound(Gamestate& game)
     {
-        if (game.soundEnabled)
+        if (game.audio.soundEnabled)
+        {
             game.crashSound.play();
+        }
     }
+
 
     void PlayGameOverSound(Gamestate& game)
     {
-        if (game.soundEnabled)
+        if (game.audio.soundEnabled)
+        {
             game.gameOverSound.play();
+        }
     }
+
 
     void PlayStartSound(Gamestate& game)
     {
-        if (game.soundEnabled)
+        if (game.audio.soundEnabled)
+        {
             game.startSound.play();
+        }
     }
+
 
     void PlayButtonSound(Gamestate& game)
     {
-        if (game.soundEnabled)
+        if (game.audio.soundEnabled)
+        {
             game.buttonSound.play();
+        }
     }
+
 
     void UpdateMusic(Gamestate& game)
     {
-        if (!game.musicEnabled)
+        if (!game.audio.musicEnabled)
         {
             game.menuMusic.stop();
             game.gameMusic.stop();
             return;
         }
 
-        
-        if (game.currentScreen == GameScreen::Menu ||
-            game.currentScreen == GameScreen::Difficulty ||
-            game.currentScreen == GameScreen::Settings ||
-            game.currentScreen == GameScreen::Records)
+        switch (game.currentScreen)
         {
+        case GameScreen::Menu:
+        case GameScreen::Difficulty:
+        case GameScreen::Settings:
+        case GameScreen::Records:
+
             game.gameMusic.stop();
 
-            if (game.menuMusic.getStatus() != sf::SoundSource::Playing)
+            if (
+                game.menuMusic.getStatus() !=
+                sf::SoundSource::Playing
+                )
+            {
                 game.menuMusic.play();
+            }
 
             return;
-        }
 
-        
-        if (game.currentScreen == GameScreen::Game)
-        {
-            
-            if (game.paused)
+        case GameScreen::Game:
+
+            if (game.gameplay.paused)
             {
                 game.gameMusic.stop();
                 return;
@@ -112,28 +139,38 @@ namespace SnakeGame
 
             game.menuMusic.stop();
 
-            if (game.gameMusic.getStatus() != sf::SoundSource::Playing)
+            if (
+                game.gameMusic.getStatus() !=
+                sf::SoundSource::Playing
+                )
+            {
                 game.gameMusic.play();
+            }
 
             return;
-        }
 
-        
-        game.menuMusic.stop();
-        game.gameMusic.stop();
+        case GameScreen::GameOver:
+        case GameScreen::NameInput:
+            game.menuMusic.stop();
+            game.gameMusic.stop();
+            return;
+        }
     }
 
-    
 
     void SetBodyTexture(
         Gamestate& game,
         int index)
     {
         const int size =
-            static_cast<int>(game.snake.segments.size());
+            static_cast<int>(
+                game.snake.segments.size()
+                );
 
         if (index <= 0 || index >= size - 1)
+        {
             return;
+        }
 
         const Position2D current =
             game.snake.segments[index].position;
@@ -150,28 +187,44 @@ namespace SnakeGame
         bool down = false;
 
         if (previous.x < current.x)
+        {
             left = true;
+        }
 
         if (previous.x > current.x)
+        {
             right = true;
+        }
 
         if (previous.y < current.y)
+        {
             up = true;
+        }
 
         if (previous.y > current.y)
+        {
             down = true;
+        }
 
         if (next.x < current.x)
+        {
             left = true;
+        }
 
         if (next.x > current.x)
+        {
             right = true;
+        }
 
         if (next.y < current.y)
+        {
             up = true;
+        }
 
         if (next.y > current.y)
+        {
             down = true;
+        }
 
         if (left && right)
         {
@@ -211,13 +264,18 @@ namespace SnakeGame
         }
     }
 
+
     void SetSnakeTextures(Gamestate& game)
     {
         const int size =
-            static_cast<int>(game.snake.segments.size());
+            static_cast<int>(
+                game.snake.segments.size()
+                );
 
         if (size == 0)
+        {
             return;
+        }
 
         for (int i = 0; i < size; ++i)
         {
@@ -226,29 +284,31 @@ namespace SnakeGame
 
             if (i == 0)
             {
-                if (segment.direction == snakeDir::Up)
+                switch (segment.direction)
                 {
+                case snakeDir::Up:
                     segment.sprite.setTexture(
                         game.headUpTexture
                     );
-                }
-                else if (segment.direction == snakeDir::Down)
-                {
+                    break;
+
+                case snakeDir::Down:
                     segment.sprite.setTexture(
                         game.headDownTexture
                     );
-                }
-                else if (segment.direction == snakeDir::Left)
-                {
+                    break;
+
+                case snakeDir::Left:
                     segment.sprite.setTexture(
                         game.headLeftTexture
                     );
-                }
-                else
-                {
+                    break;
+
+                case snakeDir::Right:
                     segment.sprite.setTexture(
                         game.headRightTexture
                     );
+                    break;
                 }
             }
             else if (i == size - 1)
@@ -292,13 +352,17 @@ namespace SnakeGame
             const sf::Texture* texture =
                 segment.sprite.getTexture();
 
-            if (texture != nullptr &&
+            if (
+                texture != nullptr &&
                 texture->getSize().x > 0 &&
-                texture->getSize().y > 0)
+                texture->getSize().y > 0
+                )
             {
                 segment.sprite.setScale(
-                    PLAYER_SIZE / texture->getSize().x,
-                    PLAYER_SIZE / texture->getSize().y
+                    PLAYER_SIZE /
+                    texture->getSize().x,
+                    PLAYER_SIZE /
+                    texture->getSize().y
                 );
             }
 
@@ -309,13 +373,16 @@ namespace SnakeGame
         }
     }
 
+
     void ResetGame(Gamestate& game)
     {
         game.snake.segments.clear();
 
-        for (int i = 0;
+        for (
+            int i = 0;
             i < INITIAL_SNAKE_LENGTH;
-            ++i)
+            ++i
+            )
         {
             SnakeSegment segment;
 
@@ -324,36 +391,48 @@ namespace SnakeGame
 
             segment.position.y = 300.f;
 
-            segment.direction = snakeDir::Right;
+            segment.direction =
+                snakeDir::Right;
 
-            game.snake.segments.push_back(segment);
+            game.snake.segments.push_back(
+                segment
+            );
         }
 
-        game.snake.direction = snakeDir::Right;
+        game.snake.direction =
+            snakeDir::Right;
 
         game.snake.snakeSpeed =
-            DifficultySpeed(game.selectedDifficulty);
+            DifficultySpeed(
+                game.gameplay.selectedDifficulty
+            );
 
         game.snake.isAlive = true;
 
-        game.score = 0;
-        game.moveTimer = 0.f;
-        game.delayTimer = START_DELAY;
+        game.gameplay.score = 0;
+        game.gameplay.moveTimer = 0.f;
+        game.gameplay.delayTimer = START_DELAY;
 
-        game.paused = false;
-        game.hasWon = false;
+        game.gameplay.paused = false;
+        game.gameplay.hasWon = false;
 
-        game.saveSelection = 0;
-        game.gameOverStage = 0;
-        game.gameOverSelection = 0;
-        game.pauseSelection = 0;
+        game.pause.selection = 0;
 
-        game.inputName.clear();
+        game.gameOver.selection = 0;
+        game.gameOver.saveSelection = 0;
+        game.gameOver.stage =
+            GameOverStage::SaveQuestion;
 
-        InitApples(game.apples, game);
+        game.nameInput.inputName.clear();
+
+        InitApples(
+            game.apples,
+            game
+        );
 
         SetSnakeTextures(game);
     }
+
 
     void MoveSnake(Gamestate& game)
     {
@@ -368,8 +447,10 @@ namespace SnakeGame
             game.snake.segments.size()
         );
 
-        for (const SnakeSegment& segment :
-            game.snake.segments)
+        for (
+            const SnakeSegment& segment :
+            game.snake.segments
+            )
         {
             oldPositions.push_back(
                 segment.position
@@ -383,30 +464,36 @@ namespace SnakeGame
         SnakeSegment& head =
             game.snake.segments[0];
 
-        if (game.snake.direction == snakeDir::Right)
+        switch (game.snake.direction)
         {
+        case snakeDir::Right:
             head.position.x += PLAYER_SIZE;
-        }
-        else if (game.snake.direction == snakeDir::Left)
-        {
+            break;
+
+        case snakeDir::Left:
             head.position.x -= PLAYER_SIZE;
-        }
-        else if (game.snake.direction == snakeDir::Up)
-        {
+            break;
+
+        case snakeDir::Up:
             head.position.y -= PLAYER_SIZE;
-        }
-        else if (game.snake.direction == snakeDir::Down)
-        {
+            break;
+
+        case snakeDir::Down:
             head.position.y += PLAYER_SIZE;
+            break;
         }
 
         head.direction =
             game.snake.direction;
 
-        for (int i = 1;
-            i < static_cast<int>(
-                game.snake.segments.size());
-            ++i)
+        for (
+            int i = 1;
+            i <
+            static_cast<int>(
+                game.snake.segments.size()
+                );
+            ++i
+            )
         {
             game.snake.segments[i].position =
                 oldPositions[i - 1];
@@ -416,34 +503,49 @@ namespace SnakeGame
         }
     }
 
+
     bool CheckWallCollision(const Snake& snake)
     {
         if (snake.segments.empty())
+        {
             return false;
+        }
 
         const Position2D head =
             snake.segments[0].position;
 
         return
             head.x < PLAYER_SIZE ||
-            head.x >= SCREEN_WIDTH - PLAYER_SIZE ||
+            head.x >=
+            SCREEN_WIDTH - PLAYER_SIZE ||
             head.y < PLAYER_SIZE ||
-            head.y >= SCREEN_HEIGHT - PLAYER_SIZE;
+            head.y >=
+            SCREEN_HEIGHT - PLAYER_SIZE;
     }
+
 
     bool CheckSelfCollision(const Snake& snake)
     {
         if (snake.segments.empty())
-            return false;
-
-        for (int i = 1;
-            i < static_cast<int>(
-                snake.segments.size());
-            ++i)
         {
-            if (SamePosition(
-                snake.segments[0].position,
-                snake.segments[i].position))
+            return false;
+        }
+
+        for (
+            int i = 1;
+            i <
+            static_cast<int>(
+                snake.segments.size()
+                );
+            ++i
+            )
+        {
+            if (
+                SamePosition(
+                    snake.segments[0].position,
+                    snake.segments[i].position
+                )
+                )
             {
                 return true;
             }
@@ -452,6 +554,7 @@ namespace SnakeGame
         return false;
     }
 
+
     void SaveRecords(const Gamestate& game)
     {
         std::ofstream file(
@@ -459,15 +562,19 @@ namespace SnakeGame
             std::ios::trunc
         );
 
-        for (const ScoreEntry& entry :
-            game.records)
+        for (
+            const ScoreEntry& entry :
+            game.records
+            )
         {
-            file << entry.name
+            file
+                << entry.name
                 << ' '
                 << entry.score
                 << '\n';
         }
     }
+
 
     void AddRecord(
         Gamestate& game,
@@ -476,9 +583,11 @@ namespace SnakeGame
         ScoreEntry entry;
 
         entry.name =
-            name.empty() ? "XYZ" : name;
+            name.empty()
+            ? "XYZ"
+            : name;
 
-        entry.score = game.score;
+        entry.score = game.gameplay.score;
 
         game.records.push_back(entry);
 
@@ -492,41 +601,55 @@ namespace SnakeGame
             }
         );
 
-        if (game.records.size() > 10)
-            game.records.resize(10);
+        if (game.records.size() > MAX_RECORDS)
+        {
+            game.records.resize(MAX_RECORDS);
+        }
 
         SaveRecords(game);
     }
 
+
     void EatApple(Gamestate& game)
     {
-        for (int i = 0;
-            i < static_cast<int>(
-                game.apples.applePos.size());
-                ++i)
+        for (
+            int i = 0;
+            i <
+            static_cast<int>(
+                game.apples.applePos.size()
+                );
+                ++i
+            )
         {
             if (game.apples.isAppleEaten[i])
+            {
                 continue;
+            }
 
-            if (!SamePosition(
-                game.snake.segments[0].position,
-                game.apples.applePos[i]))
+            if (
+                !SamePosition(
+                    game.snake.segments[0].position,
+                    game.apples.applePos[i]
+                )
+                )
             {
                 continue;
             }
 
             game.apples.isAppleEaten[i] = true;
 
-            game.score +=
+            game.gameplay.score +=
                 DifficultyPoints(
-                    game.selectedDifficulty
+                    game.gameplay.selectedDifficulty
                 );
 
             PlayEatSound(game);
 
-            for (int grow = 0;
+            for (
+                int grow = 0;
                 grow < GROWTH_PER_APPLE;
-                ++grow)
+                ++grow
+                )
             {
                 const int last =
                     static_cast<int>(
@@ -541,7 +664,8 @@ namespace SnakeGame
                 if (last > 0)
                 {
                     const Position2D beforeTail =
-                        game.snake.segments[last - 1].position;
+                        game.snake.segments[last - 1]
+                        .position;
 
                     newSegment.position.x =
                         tail.x +
@@ -566,12 +690,15 @@ namespace SnakeGame
 
             Position2D newPosition;
 
-            if (!FindFreeApplePosition(
-                game.apples,
-                game,
-                newPosition))
+            if (
+                !FindFreeApplePosition(
+                    game.apples,
+                    game,
+                    newPosition
+                )
+                )
             {
-                game.hasWon = true;
+                game.gameplay.hasWon = true;
                 game.snake.isAlive = false;
                 return;
             }
@@ -582,12 +709,14 @@ namespace SnakeGame
             game.apples.isAppleEaten[i] =
                 false;
 
-            game.apples.appleSprite[i].setPosition(
-                newPosition.x,
-                newPosition.y
-            );
+            game.apples.appleSprite[i]
+                .setPosition(
+                    newPosition.x,
+                    newPosition.y
+                );
         }
     }
+
 
     void UpdateGame(
         Gamestate& game,
@@ -597,18 +726,22 @@ namespace SnakeGame
         UpdateMusic(game);
 
         if (game.currentScreen != GameScreen::Game)
-            return;
-
-        if (game.paused)
-            return;
-
-        if (game.delayTimer > 0.f)
         {
-            game.delayTimer -= deltaTime;
+            return;
+        }
 
-            if (game.delayTimer <= 0.f)
+        if (game.gameplay.paused)
+        {
+            return;
+        }
+
+        if (game.gameplay.delayTimer > 0.f)
+        {
+            game.gameplay.delayTimer -= deltaTime;
+
+            if (game.gameplay.delayTimer <= 0.f)
             {
-                game.delayTimer = 0.f;
+                game.gameplay.delayTimer = 0.f;
                 PlayStartSound(game);
             }
 
@@ -617,48 +750,50 @@ namespace SnakeGame
 
         if (!game.snake.isAlive)
         {
-            if (!game.hasWon)
+            if (!game.gameplay.hasWon)
+            {
                 PlayCrashSound(game);
+            }
 
-            game.currentScreen =
-                GameScreen::GameOver;
+            SwitchState(
+                game,
+                GameScreen::GameOver
+            );
 
             PlayGameOverSound(game);
-
-            game.gameOverSelection = 0;
-            game.saveSelection = 0;
-            game.gameOverStage = 0;
 
             return;
         }
 
-        game.moveTimer += deltaTime;
+        game.gameplay.moveTimer += deltaTime;
 
         const float moveDelay =
             PLAYER_SIZE /
             game.snake.snakeSpeed;
 
-        if (game.moveTimer < moveDelay)
+        if (game.gameplay.moveTimer < moveDelay)
+        {
             return;
+        }
 
-        game.moveTimer -= moveDelay;
+        game.gameplay.moveTimer -= moveDelay;
 
         MoveSnake(game);
 
-        if (CheckWallCollision(game.snake) ||
-            CheckSelfCollision(game.snake))
+        if (
+            CheckWallCollision(game.snake) ||
+            CheckSelfCollision(game.snake)
+            )
         {
             game.snake.isAlive = false;
 
             PlayCrashSound(game);
             PlayGameOverSound(game);
 
-            game.currentScreen =
-                GameScreen::GameOver;
-
-            game.gameOverSelection = 0;
-            game.saveSelection = 0;
-            game.gameOverStage = 0;
+            SwitchState(
+                game,
+                GameScreen::GameOver
+            );
 
             return;
         }
@@ -667,6 +802,7 @@ namespace SnakeGame
 
         SetSnakeTextures(game);
     }
+
 
     void DrawText(
         sf::RenderWindow& window,
@@ -688,6 +824,7 @@ namespace SnakeGame
         window.draw(label);
     }
 
+
     void DrawCentered(
         sf::RenderWindow& window,
         sf::Font& font,
@@ -707,13 +844,15 @@ namespace SnakeGame
             label.getLocalBounds();
 
         label.setPosition(
-            (SCREEN_WIDTH - bounds.width) / 2.f -
+            (SCREEN_WIDTH - bounds.width) /
+            2.f -
             bounds.left,
             y
         );
 
         window.draw(label);
     }
+
 
     void DrawMenu(
         Gamestate& game,
@@ -740,9 +879,13 @@ namespace SnakeGame
             "Exit"
         };
 
-        for (int i = 0;
-            i < 5;
-            ++i)
+        constexpr int MENU_ITEMS = 5;
+
+        for (
+            int i = 0;
+            i < MENU_ITEMS;
+            ++i
+            )
         {
             DrawCentered(
                 window,
@@ -750,7 +893,7 @@ namespace SnakeGame
                 items[i],
                 160.f + i * 55.f,
                 27,
-                game.menuSelection == i
+                game.menu.selection == i
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -768,6 +911,7 @@ namespace SnakeGame
         window.display();
     }
 
+
     void DrawDifficulty(
         Gamestate& game,
         sf::RenderWindow& window)
@@ -784,9 +928,11 @@ namespace SnakeGame
             44
         );
 
-        for (int i = 0;
+        for (
+            int i = 0;
             i < MAX_DIFFICULTY;
-            ++i)
+            ++i
+            )
         {
             const int level = i + 1;
 
@@ -811,7 +957,7 @@ namespace SnakeGame
                 line,
                 135.f + i * 58.f,
                 21,
-                game.difficultySelection == i
+                game.difficulty.selection == i
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -828,6 +974,7 @@ namespace SnakeGame
 
         window.display();
     }
+
 
     void DrawSettings(
         Gamestate& game,
@@ -847,11 +994,19 @@ namespace SnakeGame
 
         const std::string sound =
             std::string("Sound: ") +
-            (game.soundEnabled ? "ON" : "OFF");
+            (
+                game.audio.soundEnabled
+                ? "ON"
+                : "OFF"
+                );
 
         const std::string music =
             std::string("Music: ") +
-            (game.musicEnabled ? "ON" : "OFF");
+            (
+                game.audio.musicEnabled
+                ? "ON"
+                : "OFF"
+                );
 
         DrawCentered(
             window,
@@ -859,7 +1014,7 @@ namespace SnakeGame
             sound,
             190.f,
             28,
-            game.settingsSelection == 0
+            game.settings.selection == 0
             ? sf::Color::Green
             : sf::Color::White
         );
@@ -870,7 +1025,7 @@ namespace SnakeGame
             music,
             250.f,
             28,
-            game.settingsSelection == 1
+            game.settings.selection == 1
             ? sf::Color::Green
             : sf::Color::White
         );
@@ -886,6 +1041,7 @@ namespace SnakeGame
 
         window.display();
     }
+
 
     void DrawRecords(
         Gamestate& game,
@@ -917,16 +1073,19 @@ namespace SnakeGame
         {
             const int count =
                 static_cast<int>(
-                    game.records.size()
-                    ) < 10
-                ? static_cast<int>(
-                    game.records.size()
+                    std::min(
+                        game.records.size(),
+                        static_cast<size_t>(
+                            MAX_RECORDS
+                            )
                     )
-                : 10;
+                    );
 
-            for (int i = 0;
+            for (
+                int i = 0;
                 i < count;
-                ++i)
+                ++i
+                )
             {
                 const std::string line =
                     std::to_string(i + 1) +
@@ -959,6 +1118,7 @@ namespace SnakeGame
         window.display();
     }
 
+
     void DrawGameField(
         Gamestate& game,
         sf::RenderWindow& window)
@@ -973,8 +1133,12 @@ namespace SnakeGame
 
         border.setSize(
             sf::Vector2f(
-                static_cast<float>(SCREEN_WIDTH),
-                static_cast<float>(SCREEN_HEIGHT)
+                static_cast<float>(
+                    SCREEN_WIDTH
+                    ),
+                static_cast<float>(
+                    SCREEN_HEIGHT
+                    )
             )
         );
 
@@ -990,23 +1154,31 @@ namespace SnakeGame
 
         window.draw(border);
 
-        for (int i = 0;
-            i < static_cast<int>(
-                game.apples.appleSprite.size());
-            ++i)
+        for (
+            int i = 0;
+            i <
+            static_cast<int>(
+                game.apples.appleSprite.size()
+                );
+            ++i
+            )
         {
             if (!game.apples.isAppleEaten[i])
+            {
                 window.draw(
                     game.apples.appleSprite[i]
                 );
+            }
         }
 
-        for (int i =
+        for (
+            int i =
             static_cast<int>(
                 game.snake.segments.size()
                 ) - 1;
             i >= 0;
-            --i)
+            --i
+            )
         {
             window.draw(
                 game.snake.segments[i].sprite
@@ -1017,7 +1189,7 @@ namespace SnakeGame
             window,
             game.font,
             "Score: " +
-            std::to_string(game.score),
+            std::to_string(game.gameplay.score),
             680.f,
             35.f,
             22
@@ -1028,7 +1200,7 @@ namespace SnakeGame
             game.font,
             "Level: " +
             std::to_string(
-                game.selectedDifficulty
+                game.gameplay.selectedDifficulty
             ),
             12.f,
             35.f,
@@ -1046,11 +1218,11 @@ namespace SnakeGame
             sf::Color::White
         );
 
-        if (game.delayTimer > 0.f)
+        if (game.gameplay.delayTimer > 0.f)
         {
-            int seconds =
+            const int seconds =
                 static_cast<int>(
-                    game.delayTimer
+                    game.gameplay.delayTimer
                     ) + 1;
 
             DrawCentered(
@@ -1063,14 +1235,18 @@ namespace SnakeGame
             );
         }
 
-        if (game.paused)
+        if (game.gameplay.paused)
         {
             sf::RectangleShape overlay;
 
             overlay.setSize(
                 sf::Vector2f(
-                    static_cast<float>(SCREEN_WIDTH),
-                    static_cast<float>(SCREEN_HEIGHT)
+                    static_cast<float>(
+                        SCREEN_WIDTH
+                        ),
+                    static_cast<float>(
+                        SCREEN_HEIGHT
+                        )
                 )
             );
 
@@ -1094,7 +1270,7 @@ namespace SnakeGame
                 "Continue",
                 250.f,
                 28,
-                game.pauseSelection == 0
+                game.pause.selection == 0
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -1105,7 +1281,7 @@ namespace SnakeGame
                 "Main menu",
                 305.f,
                 28,
-                game.pauseSelection == 1
+                game.pause.selection == 1
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -1123,6 +1299,7 @@ namespace SnakeGame
         window.display();
     }
 
+
     void DrawTopFive(
         Gamestate& game,
         sf::RenderWindow& window,
@@ -1139,16 +1316,19 @@ namespace SnakeGame
 
         const int count =
             static_cast<int>(
-                game.records.size()
-                ) < 5
-            ? static_cast<int>(
-                game.records.size()
+                std::min(
+                    game.records.size(),
+                    static_cast<size_t>(
+                        TOP_RECORDS
+                        )
                 )
-            : 5;
+                );
 
-        for (int i = 0;
+        for (
+            int i = 0;
             i < count;
-            ++i)
+            ++i
+            )
         {
             DrawText(
                 window,
@@ -1167,6 +1347,7 @@ namespace SnakeGame
         }
     }
 
+
     void DrawGameOver(
         Gamestate& game,
         sf::RenderWindow& window)
@@ -1178,7 +1359,7 @@ namespace SnakeGame
         DrawCentered(
             window,
             game.font,
-            game.hasWon
+            game.gameplay.hasWon
             ? "YOU WIN!"
             : "GAME OVER",
             35.f,
@@ -1189,7 +1370,7 @@ namespace SnakeGame
             window,
             game.font,
             "Score: " +
-            std::to_string(game.score),
+            std::to_string(game.gameplay.score),
             95.f,
             27
         );
@@ -1200,7 +1381,10 @@ namespace SnakeGame
             160.f
         );
 
-        if (game.gameOverStage == 0)
+        if (
+            game.gameOver.stage ==
+            GameOverStage::SaveQuestion
+            )
         {
             DrawCentered(
                 window,
@@ -1216,7 +1400,7 @@ namespace SnakeGame
                 "NO",
                 250.f,
                 27,
-                game.saveSelection == 0
+                game.gameOver.saveSelection == 0
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -1227,7 +1411,7 @@ namespace SnakeGame
                 "YES",
                 305.f,
                 27,
-                game.saveSelection == 1
+                game.gameOver.saveSelection == 1
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -1249,7 +1433,7 @@ namespace SnakeGame
                 "Restart",
                 330.f,
                 27,
-                game.gameOverSelection == 0
+                game.gameOver.selection == 0
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -1260,7 +1444,7 @@ namespace SnakeGame
                 "Main menu",
                 385.f,
                 27,
-                game.gameOverSelection == 1
+                game.gameOver.selection == 1
                 ? sf::Color::Green
                 : sf::Color::White
             );
@@ -1277,6 +1461,7 @@ namespace SnakeGame
 
         window.display();
     }
+
 
     void DrawNameInput(
         Gamestate& game,
@@ -1305,9 +1490,9 @@ namespace SnakeGame
         DrawCentered(
             window,
             game.font,
-            game.inputName.empty()
+            game.nameInput.inputName.empty()
             ? "XYZ"
-            : game.inputName,
+            : game.nameInput.inputName,
             250.f,
             35,
             sf::Color::Green
@@ -1325,46 +1510,40 @@ namespace SnakeGame
         window.display();
     }
 
+
     void DrawGame(
         Gamestate& game,
         sf::RenderWindow& window)
     {
-        if (game.currentScreen == GameScreen::Menu)
+        switch (game.currentScreen)
         {
+        case GameScreen::Menu:
             DrawMenu(game, window);
-            return;
-        }
+            break;
 
-        if (game.currentScreen == GameScreen::Difficulty)
-        {
+        case GameScreen::Game:
+            DrawGameField(game, window);
+            break;
+
+        case GameScreen::Difficulty:
             DrawDifficulty(game, window);
-            return;
-        }
+            break;
 
-        if (game.currentScreen == GameScreen::Settings)
-        {
+        case GameScreen::Settings:
             DrawSettings(game, window);
-            return;
-        }
+            break;
 
-        if (game.currentScreen == GameScreen::Records)
-        {
+        case GameScreen::Records:
             DrawRecords(game, window);
-            return;
-        }
+            break;
 
-        if (game.currentScreen == GameScreen::GameOver)
-        {
+        case GameScreen::GameOver:
             DrawGameOver(game, window);
-            return;
-        }
+            break;
 
-        if (game.currentScreen == GameScreen::NameInput)
-        {
+        case GameScreen::NameInput:
             DrawNameInput(game, window);
-            return;
+            break;
         }
-
-        DrawGameField(game, window);
     }
 }
